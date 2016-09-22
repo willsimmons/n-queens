@@ -18,6 +18,57 @@
 window.findNRooksSolution = function(n) {
   var solution = undefined; //fixme
 
+  var board = new Board({n: n});
+  var noneConflictsTupple = [];
+
+  var verifyPieces = function(row, column) {
+    // These two for loops for the first piece
+    for (var a = 0; a < board.rows().length; a++) {
+      for (var b = 0; b < board.rows()[a].length; b++) {
+        board.togglePiece(a, b);
+        // These two for loops for the second piece
+        for (var i = 0; i < board.rows().length; i++) {
+          for (var j = 0; j < board.rows()[i].length; j++) {
+            if (board.rows()[i][j] === 1) {
+              continue;
+            }
+            board.togglePiece(i, j);
+            if (board.hasAnyRooksConflicts()) {
+              board.togglePiece(i, j);
+            } else {
+              if (a === i && b === j) {
+                continue;
+              }
+              noneConflictsTupple.push([[a, b], [i, j]]);
+            }
+          }
+        }
+
+        for (var i = 0; i < board.rows().length; i++) {
+          for (var j = 0; j < board.rows()[i].length; j++) {
+            if (board.rows()[i][j] === 1) {
+              continue;
+            }
+            board.togglePiece(i, j);
+            if (board.hasAnyRooksConflicts()) {
+              board.togglePiece(i, j);
+            } else {
+              if (a === i && b === j) {
+                continue;
+              }
+              noneConflictsTupple.push([[a, b], [i, j]]);
+            }
+          }
+        }
+
+        board.togglePiece(a, b);
+      }
+    }
+  };
+
+  debugger;
+  verifyPieces(0, 0);
+
   console.log('Single solution for ' + n + ' rooks:', JSON.stringify(solution));
   return solution;
 };
