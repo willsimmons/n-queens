@@ -17,19 +17,28 @@
 //we just need a single solution...
 window.findNRooksSolution = function(n) {
   var solution = [];
-
   var board = new Board({n: n});
 
-  if (n === 1) {
-    solution.push([1]);
-  } else {
-    for (var i = 0; i < n; i++) {
-      board.togglePiece(i, i);
-    } 
-    if (!board.hasAnyRooksConflicts()) {
+  var findSolution = function(currentRow) {
+    if (currentRow === n ) {
       solution = board.rows().slice();
+      return;
     }
-  }
+    for (var currentColumn = 0; currentColumn < n; currentColumn++) {
+      board.togglePiece(currentRow, currentColumn);
+      if (board.hasAnyRooksConflicts()) {
+        board.togglePiece(currentRow, currentColumn);
+      } else {  
+        findSolution(currentRow + 1);
+        if (solution.length > 0) {
+          break;
+        }
+        board.togglePiece(currentRow, currentColumn);
+      }
+    }
+  };
+
+  findSolution(0);
 
   console.log('Single solution for ' + n + ' rooks:', JSON.stringify(solution));
   return solution;
@@ -40,8 +49,7 @@ window.countNRooksSolutions = function(n) {
   var solutionCount = 0;
   var board = new Board({n: n});
   
-  var validateCombination = function(currentRow) {
-    //stop counting solutions
+  var findSolution = function(currentRow) {
     if (currentRow === n ) {
       solutionCount++;
       return;
@@ -51,13 +59,13 @@ window.countNRooksSolutions = function(n) {
       if (board.hasAnyRooksConflicts()) {
         board.togglePiece(currentRow, currentColumn);
       } else {  
-        validateCombination(currentRow + 1);
+        findSolution(currentRow + 1);
         board.togglePiece(currentRow, currentColumn);
       }
     }
   };
   
-  validateCombination(0);
+  findSolution(0);
   
   console.log('Number of solutions for ' + n + ' rooks:', solutionCount);
   return solutionCount;
@@ -73,8 +81,7 @@ window.findNQueensSolution = function(n) {
   if (n === 2 | n === 3) {
     solution = board.rows().slice();
   } else {
-    var validateCombination = function(currentRow) {
-      //stop counting solutions
+    var findSolution = function(currentRow) {
       if (currentRow === n ) {
         solution = board.rows().slice();
         return;
@@ -84,7 +91,7 @@ window.findNQueensSolution = function(n) {
         if (board.hasAnyQueensConflicts()) {
           board.togglePiece(currentRow, currentColumn);
         } else {  
-          validateCombination(currentRow + 1);
+          findSolution(currentRow + 1);
           if (solution.length > 0) {
             break; 
           }
@@ -93,7 +100,7 @@ window.findNQueensSolution = function(n) {
       }
     };
     
-    validateCombination(0);
+    findSolution(0);
   }
   
   console.log('Single solution for ' + n + ' queens:', JSON.stringify(solution));
@@ -107,8 +114,7 @@ window.countNQueensSolutions = function(n) {
 
   if (n === 2 | n === 3) {
   } else {
-    var validateCombination = function(currentRow) {
-      //stop counting solutions
+    var findSolution = function(currentRow) {
       if (currentRow === n ) {
         solutionCount++;
         return;
@@ -118,13 +124,13 @@ window.countNQueensSolutions = function(n) {
         if (board.hasAnyQueensConflicts()) {
           board.togglePiece(currentRow, currentColumn);
         } else {  
-          validateCombination(currentRow + 1);
+          findSolution(currentRow + 1);
           board.togglePiece(currentRow, currentColumn);
         }
       }
     };
     
-    validateCombination(0);
+    findSolution(0);
   }
   console.log('Number of solutions for ' + n + ' queens:', solutionCount);
   return solutionCount;
