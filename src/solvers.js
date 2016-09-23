@@ -70,33 +70,30 @@ window.findNQueensSolution = function(n) {
   
   var board = new Board({n: n});
 
-  if (n === 1) {
-    solution.push([n]);
-  } else if (n >= 4) {
-    var combinationList = generateCombination(n);
-    var validCombination = [];
-    for (var i = 0; i < combinationList.length; i++) {
-      var combination = combinationList[i];
-      var pieceToggled = 0;
-      var tempCombination = [];
-      for (var j = 0; j < combination.length; j++) {
-        var rowIndex = combination[j][0];
-        var colIndex = combination[j][1];
-
-        if (board.rows()[rowIndex][colIndex] === 0) {
-          board.togglePiece(rowIndex, colIndex);
-          tempCombination.push([rowIndex, colIndex]);
-          pieceToggled++;  
-        }
-      }
-      if (pieceToggled === n) {
-        if (!board.hasAnyQueenConflicts()) {
-          validCombination.push(tempCombination);
-          break;
-        }
-      }
-    }
+  if (n === 2 | n === 3) {
     solution = board.rows().slice();
+  } else {
+    var validateCombination = function(currentRow) {
+      //stop counting solutions
+      if (currentRow === n ) {
+        solution = board.rows().slice();
+        return;
+      }
+      for (var currentColumn = 0; currentColumn < n; currentColumn++) {
+        board.togglePiece(currentRow, currentColumn);
+        if (board.hasAnyQueensConflicts()) {
+          board.togglePiece(currentRow, currentColumn);
+        } else {  
+          validateCombination(currentRow + 1);
+          if (solution.length > 0) {
+            break; 
+          }
+          board.togglePiece(currentRow, currentColumn);
+        }
+      }
+    };
+    
+    validateCombination(0);
   }
   
   console.log('Single solution for ' + n + ' queens:', JSON.stringify(solution));
