@@ -90,9 +90,9 @@
       var result = false;
       var context = this;
 
-      this.rows().forEach((row, rowIndex) => {
-        result = result || this.hasRowConflictAt(rowIndex);
-      });
+      for (var i = 0; i < this.rows().length; i++) {
+        result = result || this.hasRowConflictAt(i);
+      }
 
       return result;
     },
@@ -117,9 +117,8 @@
     // test if any columns on this board contain conflicts
     hasAnyColConflicts: function() {
       var result = false;
-      var maxIndex = this.get('n') - 1;
 
-      for (var i = 0; i < maxIndex; i++) {
+      for (var i = 0; i < this.get('n'); i++) {
         result = result || this.hasColConflictAt(i);
       }
 
@@ -133,7 +132,7 @@
     //
     // test if a specific major diagonal on this board contains a conflict
     hasMajorDiagonalConflictAt: function(majorDiagonalColumnIndexAtFirstRow) {
-      var maxIndex = this.get('n') - 1;
+      var maxIndex = this.get('n');  // - 1
       var diagonalList = [];
       var numberOfPieces = this.get('n') - (majorDiagonalColumnIndexAtFirstRow < 0 ? Math.abs(majorDiagonalColumnIndexAtFirstRow) : majorDiagonalColumnIndexAtFirstRow);
 
@@ -175,21 +174,21 @@
     //
     // test if a specific minor diagonal on this board contains a conflict
     hasMinorDiagonalConflictAt: function(minorDiagonalColumnIndexAtFirstRow) {
-      var maxIndex = this.get('n') - 1;
+      var maxIndex = this.get('n');
       var diagonalList = [];
       var numberOfPieces = this.get('n') - (minorDiagonalColumnIndexAtFirstRow < 0 ? Math.abs(minorDiagonalColumnIndexAtFirstRow) : minorDiagonalColumnIndexAtFirstRow);
 
       if (minorDiagonalColumnIndexAtFirstRow === 0) {
         for (var i = 0; i < maxIndex; i++) {
-          diagonalList.push(this.rows()[i][maxIndex - i]);
+          diagonalList.push(this.rows()[i][maxIndex - 1 - i]);
         }
       } else if (minorDiagonalColumnIndexAtFirstRow > 0) {
         for (var i = 0; i < numberOfPieces; i++) {
-          diagonalList.push(this.rows()[i][maxIndex - minorDiagonalColumnIndexAtFirstRow - i]);
+          diagonalList.push(this.rows()[i][maxIndex - 1 - minorDiagonalColumnIndexAtFirstRow - i]);
         }  
       } else {
         for (var i = 0; i < numberOfPieces; i++) {
-          diagonalList.push(this.rows()[i + Math.abs(minorDiagonalColumnIndexAtFirstRow)][maxIndex - i]);
+          diagonalList.push(this.rows()[i + Math.abs(minorDiagonalColumnIndexAtFirstRow)][maxIndex - 1 - i]);
         }  
       }
 
